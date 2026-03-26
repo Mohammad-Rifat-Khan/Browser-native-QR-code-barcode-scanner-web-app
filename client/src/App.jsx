@@ -22,6 +22,7 @@ function App() {
   const [theme, setTheme] = useState('light')
   const [copied, setCopied] = useState(null)
   const [view, setView] = useState('scanner') // 'scanner' or 'history'
+  const [lastScanResult, setLastScanResult] = useState(null) // Show scan result popup
   const scannerRef = useRef(null)
   const socketRef = useRef(null)
   const lastScanRef = useRef(null)
@@ -94,6 +95,13 @@ function App() {
 
     try {
       await saveScan(decodedText, formatName)
+      // Show success popup with scan result
+      setLastScanResult({
+        value: decodedText,
+        type: formatName,
+      })
+      // Auto-hide popup after 2 seconds
+      setTimeout(() => setLastScanResult(null), 2000)
     } catch {
       setScanStatus('Scan read, but failed to save. Check connection and retry.')
     }
@@ -276,6 +284,15 @@ function App() {
                 <span>{formattedStatus}</span>
               </div>
             </div>
+            {lastScanResult && (
+              <div className="scan-result-popup">
+                <div className="scan-result-content">
+                  <p className="scan-result-type">✓ {lastScanResult.type}</p>
+                  <p className="scan-result-value">{lastScanResult.value}</p>
+                  <p className="scan-result-hint">Next scan ready...</p>
+                </div>
+              </div>
+            )}
           </section>
         ) : (
           // HISTORY VIEW - Search, filter, and results
