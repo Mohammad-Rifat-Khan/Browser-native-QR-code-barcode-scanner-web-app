@@ -19,10 +19,10 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'client/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         working-directory: client
       
       - name: Run ESLint
