@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-1: #f3f7f7;
+  --bg-2: #e7eef2;
+  --ink: #12242b;
+  --subtle: #56727d;
+  --line: rgba(18, 55, 66, 0.14);
+  --line-strong: rgba(18, 55, 66, 0.32);
+  --focus: #f0802f;
+  --accent: #0f7d86;
+  --accent-2: #1264a2;
+  --danger: #b73434;
+  --success: #0e8a62;
+  --warn: #a35a10;
+  --panel: rgba(255, 255, 255, 0.84);
+  --panel-strong: rgba(255, 255, 255, 0.94);
+  --shadow-soft: 0 10px 34px rgba(8, 39, 49, 0.1);
+  --shadow-hard: 0 8px 20px rgba(8, 39, 49, 0.2);
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: 'Manrope', 'Trebuchet MS', sans-serif;
+  color: var(--ink);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(17, 156, 162, 0.2), transparent 40%),
+    radial-gradient(circle at 88% 86%, rgba(240, 128, 47, 0.2), transparent 34%),
+    linear-gradient(150deg, var(--bg-1), var(--bg-2));
+}
+
+#root {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  min-height: 100svh;
+}

@@ -1,0 +1,44 @@
+# Local environment files (NEVER commit these)
+server/.env
+client/.env
+.env
+.env.local
+.env.*.local
+
+# Build outputs (regenerate on deploy)
+client/dist
+server/dist
+build/
+
+# Dependencies (reinstall with npm ci)
+node_modules/
+package-lock.json
+npm-debug.log
+pnpm-debug.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# System files
+Thumbs.db
+.env.vault
+
+# Logs
+logs/
+*.log
+
+# Optional npm cache
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary files
+tmp/
+temp/
+*.tmp

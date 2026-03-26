@@ -1,0 +1,38 @@
+Link - https://claude.ai/public/artifacts/a2607753-105b-4c58-b5a6-8e44404b5715
+
+Hi---,
+
+Thank you for applying to OmniDevX Studio — we're genuinely excited to have you in the pipeline!
+
+Attached to this email (and linked below) is your Phase 1 technical task. Please go through it carefully before you begin.
+
+🔗 Online Task Brief: Link
+📎 Attached: Phase1_Task_OmniDevX.docx
+
+Here's a quick summary of what you'll be building:
+
+→ A browser-native QR code & barcode scanner web app
+→ Must work on iOS and Android browsers — no app install
+→ Scan data saved to a cloud database in real time
+→ Built in JavaScript (React / Node.js / TypeScript)
+
+The task is scored out of 20 points across five dimensions — hosting, database, speed & UX, design, and stability. All the details are in the brief.
+
+A couple of things worth keeping in mind:
+
+• There is no fixed deadline. Submissions are reviewed on a first-in, first-out (FIFO) basis, so the earlier you submit, the sooner your interview slot.
+• We know Eid is just around the corner — please take the time you need. We truly appreciate your effort during this busy season. Eid Mubarak in advance! 🌙
+
+When you're ready to submit, reply to this email with:
+1. Your live deployment URL
+2. Your GitHub repository link
+3. A short README (setup + stack used)
+
+If you have any questions about the task requirements, feel free to reach out — we're happy to help clarify.
+
+Looking forward to seeing what you build!
+
+Warm regards,
+Ranak
+Founder & Technical Lead
+OmniDevX Studio
