@@ -46,9 +46,13 @@ body {
 
 .app-root {
   min-height: 100vh;
-  background: var(--panel);
+  background: linear-gradient(135deg, var(--panel) 0%, #e8f1f3 100%);
   color: var(--ink);
   transition: background 280ms ease, color 280ms ease;
+}
+
+.app-root.dark {
+  background: linear-gradient(135deg, var(--panel) 0%, #253138 100%);
 }
 
 .app-shell {
@@ -166,7 +170,7 @@ h2 {
 }
 
 .card-description {
-  margin: -0.8rem 0 1rem;
+  margin: 0.4rem 0 1rem;
   font-size: 0.85rem;
   color: var(--subtle);
 }
