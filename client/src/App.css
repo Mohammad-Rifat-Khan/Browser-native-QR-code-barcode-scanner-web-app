@@ -61,6 +61,7 @@ body {
   padding: 1rem;
   max-width: 1400px;
   margin: 0 auto;
+  padding-top: 0;
 }
 
 .app-header,
@@ -74,6 +75,83 @@ body {
   background: linear-gradient(170deg, var(--panel-strong), var(--panel));
   box-shadow: var(--shadow-soft);
   animation: rise 400ms ease both;
+}
+
+.app-header {
+  padding: 1.4rem;
+  border-color: var(--line-strong);
+}
+
+.quick-controls {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background: var(--panel-strong);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: none;
+  box-shadow: 0 1px 3px rgba(15, 20, 25, 0.08);
+}
+
+.app-root.dark .quick-controls {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+  flex: 1;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+  font-size: 0.95rem;
+  transition: all 140ms ease;
+}
+
+.app-root.dark .search-input {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(15, 125, 134, 0.1);
+}
+
+.filter-select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.app-root.dark .filter-select {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-icon {
+  padding: 0.5rem 0.6rem !important;
+  min-width: auto !important;
+  width: 2.4rem !important;
+  height: 2.4rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.1rem;
 }
 
 .app-header {
@@ -373,23 +451,7 @@ select:focus {
 }
 
 .history-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.7rem;
-  margin-bottom: 1rem;
-}
-
-.history-controls input {
-  grid-column: 1 / -1;
-}
-
-.history-controls select {
-  width: 100%;
-}
-
-.history-controls button {
-  width: 100%;
-  justify-content: center;
+  display: none;
 }
 
 .history-item {
@@ -529,6 +591,30 @@ select:focus {
 
   .app-header {
     padding: 1.1rem;
+  }
+
+  .quick-controls {
+    padding: 0.6rem 0.8rem;
+    gap: 0.6rem;
+    margin: -0.8rem -0.8rem 0.8rem -0.8rem;
+    border-radius: 0;
+  }
+
+  .search-input {
+    font-size: 0.9rem;
+    min-height: 2.2rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .filter-select {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .btn-icon {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    padding: 0.4rem !important;
   }
 
   h1 {

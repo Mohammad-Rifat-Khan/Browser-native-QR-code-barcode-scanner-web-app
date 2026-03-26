@@ -259,6 +259,39 @@ function App() {
           <p className="subtitle">Scan QR and EAN-13 codes instantly. Every read syncs in real time.</p>
         </header>
 
+        {/* Quick access search and filter - mobile friendly */}
+        <section className="quick-controls">
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="🔍 Search scans"
+            aria-label="Search scan history"
+            className="search-input"
+          />
+          <select
+            value={typeFilter}
+            onChange={(event) => setTypeFilter(event.target.value)}
+            aria-label="Filter scan history by type"
+            className="filter-select"
+          >
+            <option value="ALL">All</option>
+            <option value="QR_CODE">QR</option>
+            <option value="EAN_13">EAN</option>
+            <option value="MANUAL">Manual</option>
+          </select>
+          <button
+            type="button"
+            className={`btn btn-secondary btn-icon ${!history.length ? 'disabled' : ''}`}
+            onClick={exportAsCSV}
+            disabled={!history.length}
+            title="Export CSV"
+            aria-label="Export history as CSV"
+          >
+            📥
+          </button>
+        </section>
+
         <section className="scanner-card">
           <div className="card-top">
             <div className="card-title-group">
@@ -318,36 +351,6 @@ function App() {
           <div className="card-top">
             <h2>Scan History</h2>
             <span className="count-badge">{history.length}</span>
-          </div>
-
-          <div className="history-controls">
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by value"
-              aria-label="Search scan history"
-            />
-            <select
-              value={typeFilter}
-              onChange={(event) => setTypeFilter(event.target.value)}
-              aria-label="Filter scan history by type"
-            >
-              <option value="ALL">All types</option>
-              <option value="QR_CODE">QR code</option>
-              <option value="EAN_13">EAN-13</option>
-              <option value="MANUAL">Manual</option>
-            </select>
-            <button
-              type="button"
-              className={`btn btn-secondary ${!history.length ? 'disabled' : ''}`}
-              onClick={exportAsCSV}
-              disabled={!history.length}
-              title="Download scan history as CSV"
-              aria-label="Export history as CSV"
-            >
-              📥 Export CSV
-            </button>
           </div>
 
           <ul className="history-list">
