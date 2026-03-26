@@ -177,6 +177,29 @@ body {
   animation: slideUp 300ms ease-out;
 }
 
+.scan-result-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 140ms ease;
+}
+
+.scan-result-close:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
 .scan-result-content {
   background: var(--success);
   color: white;
@@ -203,10 +226,11 @@ body {
   opacity: 0.95;
 }
 
-.scan-result-hint {
+.scan-result-time {
   margin: 0;
   font-size: 0.8rem;
   opacity: 0.85;
+  font-weight: 500;
 }
 
 @keyframes slideUp {

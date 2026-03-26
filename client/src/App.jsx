@@ -95,13 +95,11 @@ function App() {
 
     try {
       await saveScan(decodedText, formatName)
-      // Show success popup with scan result
+      // Show success popup with scan result (stays until user closes)
       setLastScanResult({
         value: decodedText,
         type: formatName,
       })
-      // Auto-hide popup after 2 seconds
-      setTimeout(() => setLastScanResult(null), 2000)
     } catch {
       setScanStatus('Scan read, but failed to save. Check connection and retry.')
     }
@@ -286,10 +284,19 @@ function App() {
             </div>
             {lastScanResult && (
               <div className="scan-result-popup">
+                <button
+                  type="button"
+                  className="scan-result-close"
+                  onClick={() => setLastScanResult(null)}
+                  title="Close"
+                  aria-label="Close scan result"
+                >
+                  ✕
+                </button>
                 <div className="scan-result-content">
                   <p className="scan-result-type">✓ {lastScanResult.type}</p>
                   <p className="scan-result-value">{lastScanResult.value}</p>
-                  <p className="scan-result-hint">Next scan ready...</p>
+                  <p className="scan-result-time">{new Date().toLocaleTimeString()}</p>
                 </div>
               </div>
             )}
