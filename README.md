@@ -1,4 +1,4 @@
-# OmniDevX Studio - Browser Scanner App
+# Browser Scanner App
 
 Mobile-first scanner web app for QR code and EAN-13 with real-time history sync.
 
@@ -57,9 +57,8 @@ server/                      # Node.js backend (Express)
 ├── package.json
 └── .env.example
 
-docker-compose.yml           # Local dev stack (backend + PostgreSQL)
-docker-compose.prod.yml      # EC2 stack (NGINX + backend + RDS)
-nginx.conf.prod              # NGINX reverse proxy config
+docker-compose.yml           # Production stack (NGINX + backend + RDS)
+nginx.conf                   # NGINX reverse proxy config
 .gitignore
 LICENSE
 README.md
@@ -107,19 +106,7 @@ VITE_SOCKET_URL=https://your-ec2-domain.com
 
 ## Local Development
 
-### Option 1: Docker Compose (Recommended)
-
-Starts backend + local PostgreSQL container:
-
-```bash
-docker-compose up
-```
-
-Then open http://localhost:5173 in your browser.
-
-Frontend will connect to `http://localhost:4000` (backend).
-
-### Option 2: Manual Node.js
+### Manual Node.js (Recommended for Development)
 
 1. **Install dependencies**
    ```bash
@@ -213,14 +200,14 @@ npm install      # Install backend dependencies
 ### 4. Deploy with Docker Compose (Production)
 
 ```bash
-# Use production compose file (NGINX + backend + RDS)
-docker-compose -f docker-compose.prod.yml up -d
+# Use docker-compose from repository (production setup)
+docker-compose up -d
 
 # Verify services are running
-docker-compose -f docker-compose.prod.yml ps
+docker-compose ps
 
 # Check logs
-docker-compose -f docker-compose.prod.yml logs -f backend
+docker-compose logs -f backend
 ```
 
 **What this does:**
@@ -240,8 +227,8 @@ sudo certbot certonly --standalone -d your-ec2-domain.com
 
 # Certificate path: /etc/letsencrypt/live/your-ec2-domain.com/
 
-# Update nginx.conf.prod with certificate paths, then restart
-docker-compose -f docker-compose.prod.yml restart nginx
+# Update nginx.conf with certificate paths, then restart
+docker-compose restart nginx
 ```
 
 ### 6. Connection String Testing
@@ -258,7 +245,7 @@ docker exec -it omnidevx-backend-1 npm run test
 
 ```bash
 # View all service logs
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose logs -f
 
 # Health check
 curl https://your-ec2-domain.com/api/health
@@ -293,14 +280,10 @@ npm run lint     # Run syntax checks
 
 **Docker**:
 ```bash
-# Local dev (backend + PostgreSQL)
-docker-compose up
-docker-compose down
-
 # Production (NGINX + backend + RDS)
-docker-compose -f docker-compose.prod.yml up -d
-docker-compose -f docker-compose.prod.yml logs -f
-docker-compose -f docker-compose.prod.yml down
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
 ```
 
 ## Features & How to Use
