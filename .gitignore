@@ -11,8 +11,8 @@ server/dist
 build/
 
 # Dependencies (reinstall with npm ci)
+# Note: package-lock.json IS committed for reproducible CI builds
 node_modules/
-package-lock.json
 npm-debug.log
 pnpm-debug.log
 
