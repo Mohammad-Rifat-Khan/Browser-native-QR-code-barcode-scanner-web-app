@@ -19,10 +19,9 @@ function App() {
   const [history, setHistory] = useState([])
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('ALL')
-  const [manualValue, setManualValue] = useState('')
-  const [manualType, setManualType] = useState('QR_CODE')
   const [theme, setTheme] = useState('light')
   const [copied, setCopied] = useState(null)
+  const [view, setView] = useState('scanner') // 'scanner' or 'history'
   const scannerRef = useRef(null)
   const socketRef = useRef(null)
   const lastScanRef = useRef(null)
@@ -143,22 +142,6 @@ function App() {
     }
   }, [handleScanSuccess, stopScanner])
 
-  const handleManualSubmit = async (event) => {
-    event.preventDefault()
-    const value = manualValue.trim()
-
-    if (!value) {
-      return
-    }
-
-    try {
-      await saveScan(value, manualType)
-      setManualValue('')
-    } catch {
-      setScanStatus('Manual entry failed to save. Try again.')
-    }
-  }
-
   const copyToClipboard = (text, id) => {
     navigator.clipboard.writeText(text).catch(() => undefined)
     setCopied(id)
@@ -204,6 +187,18 @@ function App() {
     return scanStatus
   }, [cameraError, scanStatus])
 
+  const getRelativeTime = useCallback((dateString) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const seconds = Math.floor((now - date) / 1000)
+    
+    if (seconds < 60) return 'just now'
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`
+    return date.toLocaleDateString()
+  }, [])
+
   useEffect(() => {
     fetchHistory().catch(() => setScanStatus('Unable to load history right now.'))
   }, [fetchHistory])
@@ -237,159 +232,131 @@ function App() {
     }
   }, [stopScanner])
 
+  // Auto-start scanner when in scanner view
+  useEffect(() => {
+    if (view === 'scanner' && !isScanning && !cameraError) {
+      startScanner().catch(() => undefined)
+    }
+  }, [view])
+
   return (
     <div className={`app-root ${theme}`}>
-      <main className="app-shell">
-        <header className="app-header">
-          <div className="header-top">
-            <div>
-              <p className="eyebrow">OmniDevX Studio Task</p>
-              <h1>Scanner Console</h1>
-            </div>
-            <button
-              type="button"
-              className="theme-toggle"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              title="Toggle theme"
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-          </div>
-          <p className="subtitle">Scan QR and EAN-13 codes instantly. Every read syncs in real time.</p>
-        </header>
-
-        {/* Quick access search and filter - mobile friendly */}
-        <section className="quick-controls">
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="🔍 Search scans"
-            aria-label="Search scan history"
-            className="search-input"
-          />
-          <select
-            value={typeFilter}
-            onChange={(event) => setTypeFilter(event.target.value)}
-            aria-label="Filter scan history by type"
-            className="filter-select"
-          >
-            <option value="ALL">All</option>
-            <option value="QR_CODE">QR</option>
-            <option value="EAN_13">EAN</option>
-            <option value="MANUAL">Manual</option>
-          </select>
+      <header className="app-nav">
+        <div className="nav-content">
           <button
             type="button"
-            className={`btn btn-secondary btn-icon ${!history.length ? 'disabled' : ''}`}
-            onClick={exportAsCSV}
-            disabled={!history.length}
-            title="Export CSV"
-            aria-label="Export history as CSV"
+            className={`nav-button ${view === 'history' ? 'active' : ''}`}
+            onClick={() => setView(view === 'history' ? 'scanner' : 'history')}
+            title={view === 'history' ? 'Back to scanner' : 'View history'}
+            aria-label="Toggle history view"
           >
-            📥
+            📋 History
           </button>
-        </section>
+          <h1 className="nav-title">Scanner Console</h1>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            title="Toggle theme"
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </div>
+      </header>
 
-        <section className="scanner-card">
-          <div className="card-top">
-            <div className="card-title-group">
-              <h2><IconCamera /> Camera Scanner</h2>
+      <main className={`app-shell view-${view}`}>
+        {view === 'scanner' ? (
+          // SCANNER VIEW - Auto-detecting camera
+          <section className="scanner-view">
+            <div id="scanner-reader" className="scanner-reader" />
+            <div className="status-section">
+              <div className={`status-text ${cameraError ? 'status-error' : isScanning ? 'status-live' : 'status-idle'}`}>
+                {cameraError ? <IconError /> : <IconCamera />}
+                <span>{formattedStatus}</span>
+              </div>
             </div>
-            <span className={`status-chip ${cameraError ? 'status-error' : isScanning ? 'status-live' : 'status-idle'}`}>
-              {cameraError ? 'Error' : isScanning ? 'Live' : 'Idle'}
-            </span>
-          </div>
-
-          <div id="scanner-reader" className="scanner-reader" />
-
-          <div className="status-section">
-            <div className={`status-text ${cameraError ? 'status-error' : ''}`}>
-              {cameraError ? <IconError /> : <IconCamera />}
-              <span>{formattedStatus}</span>
+          </section>
+        ) : (
+          // HISTORY VIEW - Search, filter, and results
+          <section className="history-view">
+            <div className="quick-controls">
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="🔍 Search scans..."
+                aria-label="Search scan history"
+                className="search-input"
+              />
+              <select
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+                aria-label="Filter scan history by type"
+                className="filter-select"
+              >
+                <option value="ALL">All Codes</option>
+                <option value="QR_CODE">QR Codes</option>
+                <option value="EAN_13">EAN-13</option>
+                <option value="MANUAL">Manual</option>
+              </select>
+              <button
+                type="button"
+                className={`btn btn-secondary btn-icon ${!history.length ? 'disabled' : ''}`}
+                onClick={exportAsCSV}
+                disabled={!history.length}
+                title="Download as CSV"
+                aria-label="Export history as CSV"
+              >
+                📥
+              </button>
             </div>
-          </div>
 
-          <div className="scanner-actions">
-            <button type="button" className="btn btn-primary" onClick={startScanner} disabled={isScanning}>
-              {isScanning ? 'Camera running...' : 'Start camera'}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={() => stopScanner()} disabled={!isScanning}>
-              Stop camera
-            </button>
-          </div>
-        </section>
+            <div className="history-header">
+              <h2>Scan History</h2>
+              <span className="count-badge">{history.length}</span>
+            </div>
 
-        <section className="manual-card">
-          <h2>Manual Entry</h2>
-          <p className="card-description">Enter or paste scan data when camera is unavailable</p>
-          <form onSubmit={handleManualSubmit} className="manual-form">
-            <input
-              type="text"
-              value={manualValue}
-              onChange={(event) => setManualValue(event.target.value)}
-              placeholder="Paste QR text or enter EAN-13 digits"
-              aria-label="Manual scan value"
-            />
-
-            <select
-              value={manualType}
-              onChange={(event) => setManualType(event.target.value)}
-              aria-label="Manual scan type"
-            >
-              <option value="QR_CODE">QR code</option>
-              <option value="EAN_13">EAN-13</option>
-              <option value="MANUAL">Other manual</option>
-            </select>
-
-            <button type="submit" className="btn btn-primary btn-full">Save entry</button>
-          </form>
-        </section>
-
-        <section className="history-card">
-          <div className="card-top">
-            <h2>Scan History</h2>
-            <span className="count-badge">{history.length}</span>
-          </div>
-
-          <ul className="history-list">
-            {history.map((scan) => (
-              <li key={scan.id} className="history-item">
-                <div className="history-content">
-                  <p className="history-value">{scan.value}</p>
-                  <p className="history-meta">
-                    {scan.type} · {new Date(scan.scanned_at).toLocaleString()}
-                  </p>
-                  <p className="history-device">
-                    {scan.device_info?.browser || 'Unknown browser'} on {scan.device_info?.platform || 'Unknown platform'}
-                  </p>
-                </div>
-                <div className="history-actions">
-                  <button
-                    type="button"
-                    className={`btn-copy ${copied === scan.id ? 'copied' : ''}`}
-                    onClick={() => copyToClipboard(scan.value, scan.id)}
-                    title="Copy to clipboard"
-                    aria-label="Copy to clipboard"
-                  >
-                    {copied === scan.id ? '✓ Copied' : <IconCopy />}
-                  </button>
-                  {scan.is_duplicate ? <span className="duplicate-badge">Duplicate</span> : null}
-                </div>
-              </li>
-            ))}
-            {!history.length ? (
-              <li className="empty-state">
-                <p>No scans yet.</p>
-                <p className="empty-subtitle">Use camera or manual entry to start scanning.</p>
-              </li>
-            ) : null}
-          </ul>
-        </section>
+            <ul className="history-list">
+              {history.map((scan) => (
+                <li key={scan.id} className="history-item">
+                  <div className="history-content">
+                    <p className="history-value">{scan.value}</p>
+                    <p className="history-meta">
+                      <span className="scan-type">{scan.type}</span>
+                      <span className="scan-time">{getRelativeTime(scan.scanned_at)}</span>
+                    </p>
+                    <p className="history-device">
+                      {scan.device_info?.browser || 'Unknown'} • {scan.device_info?.platform || 'Unknown'}
+                    </p>
+                  </div>
+                  <div className="history-actions">
+                    <button
+                      type="button"
+                      className={`btn-copy ${copied === scan.id ? 'copied' : ''}`}
+                      onClick={() => copyToClipboard(scan.value, scan.id)}
+                      title="Copy to clipboard"
+                      aria-label="Copy to clipboard"
+                    >
+                      {copied === scan.id ? '✓' : <IconCopy />}
+                    </button>
+                    {scan.is_duplicate ? <span className="duplicate-badge">Dup</span> : null}
+                  </div>
+                </li>
+              ))}
+              {!history.length ? (
+                <li className="empty-state">
+                  <p>No scans recorded yet</p>
+                  <p className="empty-subtitle">Scan codes in scanner mode to see them here</p>
+                </li>
+              ) : null}
+            </ul>
+          </section>
+        )}
       </main>
     </div>
   )
 }
 
 export default App
+
